@@ -53,6 +53,36 @@ def find_constant_columns(data):
 
 
 
+# Get highly imbalanced features
+import pandas as pd
+
+def get_highly_imbalanced_columns(df, threshold=0.9):
+    """
+    Get the names of categorical columns where any category constitutes more than a specified threshold.
+    
+    Parameters:
+    - df: pandas DataFrame
+        The input DataFrame containing categorical columns.
+    - threshold: float (default=0.9)
+        The threshold percentage (0 to 1) for identifying highly imbalanced categories.
+
+    Returns:
+    - list
+        A list of column names (strings) representing highly imbalanced categorical columns.
+    """
+    highly_imbalanced_columns = []
+    
+    # Iterate over columns
+    for col in df.columns:
+        category_counts = df[col].value_counts(normalize=True)
+        max_percentage = category_counts.max()
+        if max_percentage > threshold:
+            highly_imbalanced_columns.append(col)
+    
+    return highly_imbalanced_columns
+    
+
+
 import pandas as pd
 
 def unique_values(data, max_colwidth=50):
@@ -109,32 +139,3 @@ def mini_describe(data, column_name):
     desc["Range"] = desc["max"] - desc['min']
     desc['IQR'] = desc['75%'] - desc["25%"]
     return desc
-
-
-# Get highly imbalanced features
-import pandas as pd
-
-def get_highly_imbalanced_columns(df, threshold=0.9):
-    """
-    Get the names of categorical columns where any category constitutes more than a specified threshold.
-    
-    Parameters:
-    - df: pandas DataFrame
-        The input DataFrame containing categorical columns.
-    - threshold: float (default=0.9)
-        The threshold percentage (0 to 1) for identifying highly imbalanced categories.
-
-    Returns:
-    - list
-        A list of column names (strings) representing highly imbalanced categorical columns.
-    """
-    highly_imbalanced_columns = []
-    
-    # Iterate over columns
-    for col in df.columns:
-        category_counts = df[col].value_counts(normalize=True)
-        max_percentage = category_counts.max()
-        if max_percentage > threshold:
-            highly_imbalanced_columns.append(col)
-    
-    return highly_imbalanced_columns
